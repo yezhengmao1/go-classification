@@ -10,9 +10,9 @@ package classific
 	[]int - 分类值
 */
 func NavieBayes(dataset [][]int, testset [][]int, classcol int) []int{
-	var classVector map[int][][]int = make(map[int][][]int)	// 分类矩阵map[类别名] [][]int 矩阵值
-	var classpro map[int]float64 = make(map[int]float64)	// 类别概率map[类别名] 概率
-	var classname []int = make([]int, 0)					// 类别名
+	var classVector map[int][][]int = SplitByCol(dataset, classcol) // 分类矩阵map[类别名] [][]int 矩阵值
+	var classpro map[int]float64 = Probability(dataset, classcol)	// 类别概率map[类别名] 概率
+	var classname []int = make([]int, 0)							// 类别名
 
 	// 条件概率 map[类别名] map[第k参数] map[第k参数值]概率
 	var classcondpro map[int]map[int]map[int]float64 = make(map[int]map[int]map[int]float64)
@@ -21,13 +21,8 @@ func NavieBayes(dataset [][]int, testset [][]int, classcol int) []int{
 
 	col := len(dataset[0])
 
-	for _, item := range dataset {
-		classVector[item[classcol]] = append(classVector[item[classcol]], item)
-	}
-
 	for k, v := range classVector {
 		classname = append(classname, k)
-		classpro[k] = float64(len(v)) / float64(len(dataset))
 		for i := 0; i < col; i++ {
 			if i == classcol {
 				continue

@@ -31,7 +31,15 @@ func F1(preset, testset []int) (float64, float64, float64){
 	mpredic := 0.0	// 宏正确率
 	mrecall := 0.0  // 宏召回率
 	for k, _ := range sample {
-		predic[k] = float64(ans[k]) / float64(pre[k])
+		if pre[k] == 0 {
+			if ans[k] == 0 {
+				predic[k] = 1.0
+			}else {
+				predic[k] = 0.0
+			}
+		}else {
+			predic[k] = float64(ans[k]) / float64(pre[k])
+		}
 		recall[k] = float64(ans[k]) / float64(sample[k])
 		mpredic += predic[k]
 		mrecall += recall[k]
@@ -52,5 +60,18 @@ func Probability(data [][]int, col int) map[int]float64{
 		ret[k] = v / float64(len(data))
 	}
 	return ret
+}
+/* 分类矩阵
+@output
+	map[类名][][]矩阵值
+*/
+func SplitByCol(dataset [][]int, classcol int) map[int][][]int {
+	var classVector map[int][][]int = make(map[int][][]int)
+
+	for _, item := range dataset {
+		classVector[item[classcol]] = append(classVector[item[classcol]], item)
+	}
+
+	return classVector
 }
 
