@@ -160,3 +160,91 @@ func ReadIrIsDataToMatrix(path string) ([][]int, map[int]bool) {
 	return ret, coltype
 }
 
+func ReadMushRoomDataToMatrix(path string) ([][]int, map[int]bool) {
+	var ret [][]int = make([][]int, 0)
+	var coltype map[int]bool = make(map[int]bool)
+
+	strBytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	list := strings.Split(string(strBytes), "\n")
+
+	var dict map[int]map[string]int = make(map[int]map[string]int)
+
+	for i := 0; i < 23; i++ {
+		coltype[i] = true
+		dict[i] = make(map[string]int)
+	}
+
+	/* 统计映射 */
+	for _, item := range list {
+		if len(item) < 3 {
+			continue
+		}
+		attr := strings.Split(item, ",")
+		for k, _ := range attr{
+			dict[k][attr[k]]++
+		}
+	}
+	for _, v := range dict {
+		pos := 0
+		for n, _ := range v {
+			v[n] = pos
+			pos++
+		}
+	}
+
+	/* 矩阵转化 */
+	for _, item := range list {
+		if len(item) < 3 {
+			continue
+		}
+		attr := strings.Split(item, ",")
+		var itemVector []int = make([]int, 0)
+		for i := 0 ; i < 23; i++ {
+			itemVector = append(itemVector, dict[i][attr[i]])
+		}
+		ret = append(ret, itemVector)
+	}
+
+	return ret, coltype
+}
+
+func ReadRoomDataToMatrix(path string) ([][]int, map[int]bool) {
+	var ret [][]int = make([][]int, 0)
+	var coltype map[int]bool = make(map[int]bool)
+	strBytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	list := strings.Split(string(strBytes), "\n")
+
+	for i := 0; i < 6; i++ {
+		coltype[i] = true
+	}
+
+	for _, item := range list[1:] {
+		if len(item) < 3 {
+			continue
+		}
+
+		attr := strings.Split(item, ",")
+		var itemVector []int = make([]int, 0)
+
+		for i := 2 ; i <= 7; i++ {
+			var v int = 0
+			t,_ := strconv.ParseFloat(attr[i], 64)
+			if i == 2 || i == 3 {
+				v = int(t + 0.5)
+			}else if i == 4 || i == 5 || i == 7{
+				v = int(t)
+			}else {
+				v = int(t * 10000)
+			}
+			itemVector = append(itemVector, v)
+		}
+		ret = append(ret, itemVector)
+	}
+	return ret, coltype
+}
