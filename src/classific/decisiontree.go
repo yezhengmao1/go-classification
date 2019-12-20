@@ -171,6 +171,9 @@ func FindSliptPoint(dataset [][]int, col, classcol int, colSplitType map[int]boo
 
 	for k, _ := range tosplitpoint {
 		diffset := SplitByValueAndCol(dataset, col, k, colSplitType)
+		if len(diffset[0]) == 0 || len(diffset[1]) == 0 {
+			continue
+		}
 		entropytable[k] = ColEntropy(diffset[0], classcol) + ColEntropy(diffset[1], classcol)
 	}
 
