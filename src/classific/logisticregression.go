@@ -118,8 +118,8 @@ func LogisticRegressionTrain(dataset [][]int, classcol int, alpha float64, iter 
 
 	root := NewPredictNode(classmap, len(dataset[0]) - 1)
 
-	for _, item := range dataset {
-		for it := 0; it < iter; it++ {
+	for i := 0; i < iter; i++ {
+		for _, item := range dataset {
 			/* 计算权重 */
 			var v float64 = 0.0
 			var p int = 0
